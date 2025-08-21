@@ -22,13 +22,15 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/sample.zig"),
     });
 
-    const lib = b.addStaticLibrary(.{
+    const lib = b.addLibrary(.{
         .name = "zig-wav",
         // In this case the main source file is merely a path, however, in more
         // complicated build scripts, this could be a generated file.
-        .root_source_file = b.path("src/wav.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{ // this line was added
+            .root_source_file = b.path("src/wav.zig"),
+            .target = target,
+            .optimize = optimize,
+        }), // this line was added
     });
 
     // This declares intent for the library to be installed into the standard
@@ -39,15 +41,19 @@ pub fn build(b: *std.Build) void {
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
     const sample_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/sample.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{ // this line was added
+            .root_source_file = b.path("src/sample.zig"),
+            .target = target,
+            .optimize = optimize,
+        }), // this line was added
     });
 
     const wav_unit_tests = b.addTest(.{
-        .root_source_file = b.path("src/sample.zig"),
-        .target = target,
-        .optimize = optimize,
+        .root_module = b.createModule(.{ // this line was added
+            .root_source_file = b.path("src/sample.zig"),
+            .target = target,
+            .optimize = optimize,
+        }), // this line was added
     });
 
     const run_sample_unit_tests = b.addRunArtifact(sample_unit_tests);
